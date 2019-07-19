@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="monokai_sublime.min.css"> 
+<script src="highlight.min.js"></script> 
+<script>hljs.initHighlightingOnLoad();</script>
+<meta charset="UTF-8">
+<title>電気工作所</title>
+</head>
+<body>
+<h1  class="text-stroke" align="center"><strong>電気工作所</strong></h1>
+<ul>
+<nav>
+  <a href="body.html"><span class="navbtn">ここは？</span></a>
+  <a href="kousaku.html"><span class="navbtn">工作品</span></a>
+    <a class="is-current"><span class="navbtn">プログラミング</span></a>
+	<a href="link.html"><span class="navbtn">リンク</span></a>
+  <a href="info.html"><span class="navbtn">Info</span></a>
+  <div class="nav-underline"></div>
+</nav>
+<div class="textes">
+<h2 style="text-align:center"><span class="text-stroke">プログラミング</span></h2>
+<p style="text-align:center"><strong class="text-stroke">主にC#をやってます。</strong></p>
+
+</br></br>
+<pre><code class="cs">using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using System.Security.Cryptography;
+using System.IO;
+using MyEncrypter_Class;
+
+namespace MyEncrypter
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {
+            Crypto crypto = new Crypto();
+            string k = "test";
+            string def = "Test String";
+            byte[] enc = crypto.Encrypt(Encoding.UTF8.GetBytes(def), k);
+            byte[] dec = crypto.Decrypt(enc, k);
+            Console.WriteLine("String: {0}\nEncrypted String: {1}\nDecrypted String: {2}", def, Encoding.UTF8.GetString( enc), Encoding.UTF8.GetString(dec));
+            Console.ReadLine();
+        }
+        static byte[] encrypt(byte[] str, string keys)
+        {
+            Random rand = new Random();
+            MD5 md5 = MD5.Create();
+            byte[] keyshash = md5.ComputeHash(Encoding.UTF8.GetBytes(keys));
+            byte[] enc = new byte[str.Length * 2];
+            byte[] ind = new byte[str.Length];
+
+            for (int i = 0; i < str.Length; i++)
+            {
+                int no = rand.Next(0, keyshash.Length - 1);
+                enc[i] = (byte)(str[i] + keyshash[no]);
+                ind[i] = (byte)no;
+            }
+            for (int i = 0; i < str.Length; i++)
+            {
+                enc[i + str.Length] = ind[i];
+            }
+            return enc;
+        }
+        static byte[] decrypt(byte[] str, string keys)
+        {
+            int strLeng = str.Length / 2;
+            Console.WriteLine();
+            MD5 md5 = MD5.Create();
+            byte[] keyshash = md5.ComputeHash(Encoding.UTF8.GetBytes(keys));
+            byte[] index = new byte[strLeng];
+            byte[] decrypt = new byte[strLeng];
+            for (int i = 0; i < index.Length; i++)
+            {
+                index[i] = str[i + strLeng];
+            }
+            for (int i = 0; i < strLeng; i++)
+            {
+                int no = index[i];
+                decrypt[i] = (byte)(str[i] - keyshash[no]);
+            }
+            return decrypt;
+        }
+    }
+
+}
+</code></pre>
+<p style="text-align:center">MD5 HASHを利用した自作暗号化アルゴリズム。</br>秘密鍵を自身で設定して内容を暗号化できる。</p>
+<h1><a href="load.html" class="text-stroke"><< ホームへ戻る</a></h1>
+</br></br>
+</div>
+</br>
+<hr>Copyright ©2019 Dohyung Lee. All Rights Reserved.</hr>
+</div>
+</body>
+</html>
